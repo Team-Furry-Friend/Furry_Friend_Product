@@ -2,15 +2,12 @@ package com.v3.furry_friend_product.basket.controller;
 
 import java.util.List;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.v3.furry_friend_product.basket.dto.BasketRequestDTO;
@@ -58,21 +55,15 @@ public class BasketController {
         }
     }
 
-    @DeleteMapping("/basket")
-    public ResponseEntity<String> basketDelete(@RequestParam(value = "bid") Long bid, @CookieValue(name = "access_token", required = false) String accessToken) {
+    @DeleteMapping("/{bid}/{access_token}")
+    public ApiResponse basketDelete(@PathVariable("bid") Long bid, @PathVariable("access_token") String accessToken) {
 
         try {
-            BasketRequestDTO basketRequestDTO = BasketRequestDTO.builder()
-                .bid(bid)
-                .build();
-            // basketService.deleteBasketItem(basketRequestDTO, tokenService.getMemberId(accessToken));
-
-            String redirectUrl = "/basket/basket"; // 리다이렉트할 URL
-            return ResponseEntity.ok().body(redirectUrl);
+            basketService.deleteBasketItem(bid, accessToken);
+            return ApiResponse.success("찜 삭제 성공");
         } catch (Exception e) {
-            // 실패했을 때의 동작을 구현
-            log.error("삭제 실패");
-            return ResponseEntity.badRequest().build(); // 실패 응답
+            log.error(e.getMessage());
+            return ApiResponse.fail(400, "찜 삭제 실패 : " + e.getMessage());
         }
     }
 }

@@ -94,8 +94,9 @@ public class ProductServiceImpl implements ProductService {
         //데이터 베이스에서 결과 가져오기
         List<Object []> result = productRepository.getProductWithAll(pid);
         Product product = (Product) result.get(0)[0];
-        System.out.println(result);
+
         List<ProductImage> productImageList = new ArrayList<>();
+
         result.forEach(arr -> {
             ProductImage productImage = (ProductImage) arr[1];
             productImageList.add(productImage);

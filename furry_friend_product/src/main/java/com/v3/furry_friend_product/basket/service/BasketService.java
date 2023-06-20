@@ -1,20 +1,15 @@
 package com.v3.furry_friend_product.basket.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.v3.furry_friend_product.basket.dto.BasketRequestDTO;
 import com.v3.furry_friend_product.basket.dto.BasketResponseDTO;
 import com.v3.furry_friend_product.basket.entity.Basket;
 import com.v3.furry_friend_product.basket.repository.BasketRepository;
 import com.v3.furry_friend_product.common.service.TokenService;
-import com.v3.furry_friend_product.product.dto.ProductDTO;
 import com.v3.furry_friend_product.product.dto.ProductImageDTO;
 import com.v3.furry_friend_product.product.entity.Product;
 import com.v3.furry_friend_product.product.entity.ProductImage;
@@ -41,31 +36,18 @@ public class BasketService {
             Long memberId = tokenService.getMemberId(accessToken);
             List<Object []> result = basketRepository.basketByMember(memberId);
 
-            Map<Long, Product> productMap = new HashMap<>();
-            Map<Long, List<ProductImage>> productImageMap = new HashMap<>();
-
             List<BasketResponseDTO> basketResponseDTOList = new ArrayList<>();
 
-            // result.forEach(arr -> {
-            //
-            //     Long bid = (Long) arr[0];
-            //     Product product =  (Product) arr[1];
-            //     ProductImage productImage = (ProductImage) arr[2];
-            //
-            //     if (productImageMap.containsKey(bid)) {
-            //         productImageMap.get(bid).add(productImage);
-            //     } else {
-            //         List<ProductImage> images = new ArrayList<>();
-            //         images.add(productImage);
-            //         productImageMap.put(bid, product);
-            //     }
-            //
-            //
-            //     productMap.forEach((bid, product) -> {
-            //         List<ProductImage> images = productImageMap.get(bid);
-            //         basketResponseDTOList.add(entityToDTO(bid, p, images));
-            //     });
-            // });
+
+            result.forEach(arr -> {
+
+                // 0번째는 찜 고유 번호
+                // 1번째는 상품 정보
+                // 2번째는 상품 이미지 1장
+                basketResponseDTOList.add(entityToDTO((Long) arr[0], (Product) arr[1], (ProductImage) arr[2]));
+
+            });
+
             return basketResponseDTOList;
         } catch (Exception e){
             throw new Exception("에러 발생 : " + e.getMessage());
@@ -74,9 +56,14 @@ public class BasketService {
     }
 
     // 장바구니 삭제하기
-    @Transactional
-    public void deleteBasketItem(BasketRequestDTO basketRequestDTO, Long memberId){
-        basketRepository.deleteBasketByBasket_id(basketRequestDTO.getBid(), memberId);
+    public void deleteBasketItem(Long bid, String accessToken){
+
+        Long memberId = tokenService.getMemberId(accessToken);
+        Basket basket = basketRepository.findByBid(bid);
+
+        if (memberId.equals(basket.getMemberid())){
+            basketRepository.deleteById(bid);
+        }
     }
 
     public void saveBasket(BasketRequestDTO basketRequestDTO){
@@ -92,18 +79,15 @@ public class BasketService {
     }
 
     // Entity를 DTO로 변경해주는 메서드
-    public BasketResponseDTO entityToDTO(Long bid, Product product, List<ProductImage> productImageList){
+    public BasketResponseDTO entityToDTO(Long bid, Product product, ProductImage productImage){
 
-        List<ProductImageDTO> productImageDTOList = new ArrayList<>();
-        productImageList.forEach(arr -> {
-            ProductImageDTO productImageDTO = ProductImageDTO.builder()
-                .imgName(arr.getImgName())
-                .path(arr.getPath())
-                .build();
-            productImageDTOList.add(productImageDTO);
-        });
+        ProductImageDTO productImageDTO = ProductImageDTO.builder()
+            .imgName(productImage.getImgName())
+            .path(productImage.getPath())
+            .build();
 
-        ProductDTO productDTO = ProductDTO.builder()
+        return BasketResponseDTO.builder()
+            .bid(bid)
             .pid(product.getPid())
             .pname(product.getPname())
             .pcategory(product.getPcategory())
@@ -113,12 +97,7 @@ public class BasketService {
             .del(product.isDel())
             .regDate(product.getRegDate())
             .modDate(product.getModDate())
-            .imageDTOList(productImageDTOList)
-            .build();
-
-        return BasketResponseDTO.builder()
-            .bid(bid)
-            .productDTO(productDTO)
+            .imageDTO(productImageDTO)
             .build();
     }
 }

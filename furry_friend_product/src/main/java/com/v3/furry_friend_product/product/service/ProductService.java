@@ -3,6 +3,7 @@ package com.v3.furry_friend_product.product.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.v3.furry_friend_product.product.dto.PageRequestDTO;
@@ -66,15 +67,21 @@ public interface ProductService {
                 .pname(product.getPname())
                 .pprice(product.getPprice())
                 .del(product.isDel())
+                .mid(product.getMemberId())
                 .regDate(product.getRegDate())
                 .modDate(product.getModDate())
                 .build();
-        List<ProductImageDTO> productImageDTOList = productImages.stream().map(productImage -> {
-            return ProductImageDTO.builder()
+
+        // productImages 리스트에 null 값이 포함되어 있는 경우 예외 처리
+        List<ProductImageDTO> productImageDTOList = productImages.stream()
+            .filter(Objects::nonNull)
+            .map(productImage -> {
+                return ProductImageDTO.builder()
                     .imgName(productImage.getImgName())
                     .path(productImage.getPath())
                     .build();
-        }).collect(Collectors.toList());
+            })
+            .collect(Collectors.toList());
         productDTO.setImageDTOList(productImageDTOList);
 
         return productDTO;
