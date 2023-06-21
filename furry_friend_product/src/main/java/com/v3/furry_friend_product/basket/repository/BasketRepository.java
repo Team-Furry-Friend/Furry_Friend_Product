@@ -14,4 +14,8 @@ public interface BasketRepository extends JpaRepository<Basket, Long> {
     // 장바구니 검색
     @Query("select b.bid, p, pi from Basket b left outer join Product p on b.product = p left join ProductImage pi on pi.product = p where b.memberid = :memberid group by p")
     List<Object []> basketByMember(Long memberid);
+
+    @Query("select b.bid, b.product.pid, b.memberid from Basket b left outer join Product p on b.product = p where b.memberid = :memberid group by p")
+    List<Object []> findBasketByMember(Long memberid);
+
 }

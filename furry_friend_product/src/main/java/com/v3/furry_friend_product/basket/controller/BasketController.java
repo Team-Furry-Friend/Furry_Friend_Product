@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.v3.furry_friend_product.basket.dto.BasketRequestDTO;
 import com.v3.furry_friend_product.basket.dto.BasketResponseDTO;
+import com.v3.furry_friend_product.basket.dto.MemberBasketResponseDTO;
 import com.v3.furry_friend_product.basket.service.BasketService;
 import com.v3.furry_friend_product.common.response.ApiResponse;
 
@@ -64,6 +65,21 @@ public class BasketController {
         } catch (Exception e) {
             log.error(e.getMessage());
             return ApiResponse.fail(400, "찜 삭제 실패 : " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/member/{access_token}")
+    public ApiResponse<List<MemberBasketResponseDTO>> getMemberbasket(@PathVariable("access_token") String accessToken){
+
+        try {
+            List<MemberBasketResponseDTO> memberBasketResponseDTOList = basketService.getMemberBasket(accessToken);
+            return ApiResponse.success("사용자 찜 목록 불러오기 성공", memberBasketResponseDTOList);
+        }catch (NullPointerException nullPointerException){
+            log.error("NullPointerException: " + nullPointerException.getMessage());
+            return ApiResponse.error(500, "access_token 미포함 : " + nullPointerException.getMessage());
+        }catch (Exception e) {
+            log.error(e.getMessage());
+            return ApiResponse.fail(400, "사용자 찜 목록 불러오기 실패 : " + e.getMessage());
         }
     }
 }

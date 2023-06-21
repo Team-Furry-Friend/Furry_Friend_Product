@@ -21,7 +21,9 @@ public class ProductDTO {
     private Long pprice;    //원가
     private boolean del;    //판매여부
 
+    // 등록한 사용자 관련
     private Long mid;
+    private String mName;
 
     //등록일과 수정
     private LocalDateTime regDate;

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.v3.furry_friend_product.basket.dto.BasketRequestDTO;
 import com.v3.furry_friend_product.basket.dto.BasketResponseDTO;
+import com.v3.furry_friend_product.basket.dto.MemberBasketResponseDTO;
 import com.v3.furry_friend_product.basket.entity.Basket;
 import com.v3.furry_friend_product.basket.repository.BasketRepository;
 import com.v3.furry_friend_product.common.service.TokenService;
@@ -29,7 +30,7 @@ public class BasketService {
 
     private final TokenService tokenService;
 
-    // 장바구니 읽어오기
+    // 찜 목록 읽어오기
     public List<BasketResponseDTO> findBasketList(String accessToken) throws Exception{
 
         try {
@@ -55,7 +56,7 @@ public class BasketService {
 
     }
 
-    // 장바구니 삭제하기
+    // 찜 삭제하기
     public void deleteBasketItem(Long bid, String accessToken){
 
         Long memberId = tokenService.getMemberId(accessToken);
@@ -66,6 +67,7 @@ public class BasketService {
         }
     }
 
+    // 찜 하기
     public void saveBasket(BasketRequestDTO basketRequestDTO){
 
         Product product = productRepository.findByPid(basketRequestDTO.getPid());
@@ -76,6 +78,34 @@ public class BasketService {
             .memberid(memberId).build();
 
         basketRepository.save(basket);
+    }
+
+    // 사용자 찜 목록 조회
+    public List<MemberBasketResponseDTO> getMemberBasket(String accessToken){
+
+        Long memberId = tokenService.getMemberId(accessToken);
+        List<Object []> result = basketRepository.findBasketByMember(memberId);
+
+        List<MemberBasketResponseDTO> memberBasketResponseDTOList = new ArrayList<>();
+
+        result.forEach(arr -> {
+
+            MemberBasketResponseDTO memberBasketResponseDTO = MemberBasketResponseDTO.builder()
+                .bid((Long) arr[0])
+                .pid((Long) arr[1])
+                .mid((Long) arr[2])
+                .build();
+
+            // 0번째는 찜 고유 번호
+            // 1번째는 상품 정보
+            // 2번째는 상품 사용자 고유 번호
+
+            memberBasketResponseDTOList.add(memberBasketResponseDTO);
+
+        });
+
+        return memberBasketResponseDTOList;
+
     }
 
     // Entity를 DTO로 변경해주는 메서드

@@ -1,17 +1,26 @@
 package com.v3.furry_friend_product.product.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import com.v3.furry_friend_product.common.service.TokenService;
 import com.v3.furry_friend_product.common.dto.JwtRequest;
@@ -37,6 +46,9 @@ public class ProductServiceImpl implements ProductService {
     private final ProductImageRepository productImageRepository;
 
     private final TokenService tokenService;
+
+    @Value("${token.getmemberName}")
+    private String url;
 
     @Override
     public void register(ProductRequestDataDTO productRequestDataDTO) {
@@ -102,6 +114,50 @@ public class ProductServiceImpl implements ProductService {
             productImageList.add(productImage);
         });
 
-        return entitiesToDTO(product, productImageList);
+        ProductDTO productDTO = entitiesToDTO(product, productImageList);
+        productDTO.setMName(getMemberName(productDTO.getMid()));
+
+        return productDTO;
+    }
+
+    public String getMemberName(Long mid){
+
+        // RestTemplate를 통한 API 호출
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        ResponseEntity<String> response = null;
+
+        try {
+            // RestTemplate를 통한 API 호출
+            response = restTemplate.exchange(url + mid, HttpMethod.GET, entity, String.class);
+        } catch (RestClientException re) {
+            log.error("API 호출 오류 및 재시도 실행: " + re);
+            try {
+                // 5초 대기 후 재시도
+                Thread.sleep(5000);
+                response = restTemplate.exchange(url + mid, HttpMethod.GET, entity, String.class);
+            } catch (Exception e) {
+                log.error("재시도 중 Exception 발생: " + e);
+            }
+        }
+
+        // Gson 객체를 생성합니다.
+        Gson gson = new Gson();
+
+        // JSON 문자열을 JsonObject로 변환합니다.
+        JsonObject jsonObject = gson.fromJson(response.getBody(), JsonObject.class);
+
+        // "data" 필드의 값을 추출합니다.
+        String name = jsonObject.get("data").getAsString();
+
+
+        log.info("response: " +name);
+
+        return name;
     }
 }
