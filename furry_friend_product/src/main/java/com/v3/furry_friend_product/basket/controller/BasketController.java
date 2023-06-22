@@ -35,9 +35,6 @@ public class BasketController {
         try {
             List<BasketResponseDTO> basketResponseDTOList = basketService.findBasketList(accessToken);
             return ApiResponse.success("찜 목록 불러오기 성공", basketResponseDTOList);
-        }catch (NullPointerException nullPointerException){
-            log.error("NullPointerException: " + nullPointerException.getMessage());
-            return ApiResponse.error(500, "access_token 미포함 : " + nullPointerException.getMessage());
         }catch (Exception e) {
             log.error(e.getMessage());
             return ApiResponse.fail(400, "찜 목록 불러오기 실패 : " + e.getMessage());

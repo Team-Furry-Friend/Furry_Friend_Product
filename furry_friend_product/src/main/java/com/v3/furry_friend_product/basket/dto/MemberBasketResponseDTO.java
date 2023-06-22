@@ -1,9 +1,5 @@
 package com.v3.furry_friend_product.basket.dto;
 
-import java.time.LocalDateTime;
-
-import com.v3.furry_friend_product.product.dto.ProductImageDTO;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
