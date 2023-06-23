@@ -1,5 +1,6 @@
 package com.v3.furry_friend_product.product.service;
 
+import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +22,11 @@ public interface ProductService {
     //데이터 목록을 위한 메서드
     PageResponseDTO<ProductDTO, Object []> getList(PageRequestDTO requestDTO);
 
+    // 상품 출력을 위한 메서드
     ProductDTO getProduct(Long pid);
+
+    // 상품 삭제를 위한 메서드
+    void deleteProduct(Long pid, String accessToken) throws AccessDeniedException;
 
     //DTO를 Entity로 변환
     //하나의 Entity가 아니라 Movie와 MovieImage로 변환이 되어야 해서

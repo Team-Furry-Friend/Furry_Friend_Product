@@ -33,4 +33,8 @@ public class Product extends BaseEntity {
     private boolean del;    //판매여부
 
     private Long memberId;
+
+    public void setDel(boolean del) {
+        this.del = del;
+    }
 }

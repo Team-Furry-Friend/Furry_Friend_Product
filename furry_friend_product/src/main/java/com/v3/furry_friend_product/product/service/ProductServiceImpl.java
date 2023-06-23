@@ -1,5 +1,6 @@
 package com.v3.furry_friend_product.product.service;
 
+import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -75,8 +76,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public PageResponseDTO<ProductDTO, Object[]> getList(PageRequestDTO requestDTO) {
 
-        log.info("PageRequestDTO" + requestDTO);
-
         Pageable pageable = requestDTO.getPageable(Sort.by("pid").descending());
         //데이터베이스에 요청
         Page<Object []> result = productRepository.getList(pageable);
@@ -118,6 +117,19 @@ public class ProductServiceImpl implements ProductService {
         productDTO.setMName(getMemberName(productDTO.getMid()));
 
         return productDTO;
+    }
+
+    @Override
+    public void deleteProduct(Long pid, String accessToken) throws AccessDeniedException {
+        Long memberId = tokenService.getMemberId(accessToken);
+        Product product = productRepository.findByPid(pid);
+        if (memberId.equals(product.getMemberId())){
+            product.setDel(true);
+            productRepository.save(product);
+        }else{
+            throw new AccessDeniedException("상품 삭제 권한이 없습니다.");
+        }
+
     }
 
     public String getMemberName(Long mid){
