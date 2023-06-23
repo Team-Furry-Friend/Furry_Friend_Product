@@ -28,6 +28,9 @@ public interface ProductService {
     // 상품 삭제를 위한 메서드
     void deleteProduct(Long pid, String accessToken) throws AccessDeniedException;
 
+    // 상품 수정을 위한 메서드
+    void updateProduct(ProductRequestDataDTO productRequestDataDTO);
+
     //DTO를 Entity로 변환
     //하나의 Entity가 아니라 Movie와 MovieImage로 변환이 되어야 해서
     //Map으로 리턴
@@ -35,12 +38,14 @@ public interface ProductService {
         Map<String, Object> entityMap = new HashMap<>();
 
         Product product = Product.builder()
+                .pid(productDTO.getPid())
                 .pcategory(productDTO.getPcategory())
                 .pexplain(productDTO.getPexplain())
                 .pname(productDTO.getPname())
                 .pprice(productDTO.getPprice())
                 .memberId(productDTO.getMid())
                 .del(productDTO.isDel())
+
                 .build();
         entityMap.put("product", product);
 

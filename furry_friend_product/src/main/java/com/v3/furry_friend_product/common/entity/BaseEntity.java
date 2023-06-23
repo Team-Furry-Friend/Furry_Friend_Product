@@ -21,4 +21,8 @@ public class BaseEntity {
 
     @LastModifiedDate
     private LocalDateTime modDate;
+
+    public void setRegDate(LocalDateTime regDate) {
+        this.regDate = regDate;
+    }
 }

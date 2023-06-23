@@ -4,6 +4,7 @@ import java.nio.file.AccessDeniedException;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -69,6 +70,7 @@ public class ProductController {
 
     }
 
+    // 상품 삭제
     @DeleteMapping("/{pid}/{access_token}")
     public ApiResponse deleteProduct(@PathVariable("pid") Long pid, @PathVariable("access_token") String accessToken){
         try{
@@ -80,6 +82,19 @@ public class ProductController {
         }catch (Exception e){
             log.error(e.getMessage());
             return ApiResponse.fail(400, "상품 삭제 실패 : " + e.getMessage());
+        }
+    }
+
+    // 상품 수정
+    @PatchMapping("")
+    public ApiResponse updateProduct(@RequestBody ProductRequestDataDTO productRequestDataDTO){
+
+        try {
+            productService.updateProduct(productRequestDataDTO);
+            return ApiResponse.success("상품 수정 성공");
+        }catch (Exception e){
+            log.error("상품 수정 실패 : " + e.getMessage());
+            return ApiResponse.fail(400, "상품 등록 실패 : " + e.getMessage());
         }
     }
 }

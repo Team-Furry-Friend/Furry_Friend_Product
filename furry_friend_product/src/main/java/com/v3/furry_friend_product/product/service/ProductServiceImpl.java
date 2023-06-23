@@ -132,6 +132,24 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
+
+    // 상품 수정을 위한 메서드
+    @Override
+    public void updateProduct(ProductRequestDataDTO productRequestDataDTO) {
+        ProductDTO productDTO = productRequestDataDTO.getProductDTO();
+        JwtRequest jwtRequest = productRequestDataDTO.getJwtRequest();
+
+        // 등록자 확인
+        Long memberId = tokenService.getMemberId(jwtRequest.getAccess_token());
+        if (productDTO.getMid().equals(memberId)){
+            Map<String, Object> entityMap = dtoToEntity(productDTO);
+            //상품과 상품 이미지 정보 찾아오기
+            Product product = (Product) entityMap.get("product");
+            product.setRegDate(productDTO.getRegDate());
+            productRepository.save(product);
+        }
+    }
+
     public String getMemberName(Long mid){
 
         // RestTemplate를 통한 API 호출
