@@ -45,8 +45,8 @@ public interface ProductService {
                 .pprice(productDTO.getPprice())
                 .memberId(productDTO.getMid())
                 .del(productDTO.isDel())
-
                 .build();
+
         entityMap.put("product", product);
 
         //MovieImageDTO의 List

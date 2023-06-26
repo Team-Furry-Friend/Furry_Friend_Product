@@ -47,8 +47,6 @@ public class TokenService {
             }
         }
 
-        log.info("response: " + response.getBody().getData().getMemberId());
-
         // API 호출 결과에서 Long 값 추출
         Long memberId = response.getBody().getData().getMemberId();
 

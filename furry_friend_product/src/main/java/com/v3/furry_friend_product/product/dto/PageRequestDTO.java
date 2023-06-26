@@ -16,7 +16,7 @@ public class PageRequestDTO {
     private int page;
     //페이지 당 데이터 개수
     private int size;
-    //검색 항목
+    //검색 카테고리
     private String type;
     //검색 내용
     private String keyword;
@@ -24,6 +24,8 @@ public class PageRequestDTO {
     public PageRequestDTO() {
         page=1;
         size=10;
+        type=null;
+        keyword=null;
     }
 
     //page와 size를 가지고 Pageable 객체를 생성해주는 메서드

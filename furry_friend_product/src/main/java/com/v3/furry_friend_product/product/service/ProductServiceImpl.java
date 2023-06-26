@@ -48,7 +48,7 @@ public class ProductServiceImpl implements ProductService {
 
     private final TokenService tokenService;
 
-    @Value("${token.getmemberName}")
+    @Value("${member.getmemberName}")
     private String url;
 
     @Override
@@ -77,8 +77,12 @@ public class ProductServiceImpl implements ProductService {
     public PageResponseDTO<ProductDTO, Object[]> getList(PageRequestDTO requestDTO) {
 
         Pageable pageable = requestDTO.getPageable(Sort.by("pid").descending());
-        //데이터베이스에 요청
-        Page<Object []> result = productRepository.getList(pageable);
+
+        log.info("getType : " + requestDTO.getPage());
+        log.info("getType : " + requestDTO.getSize());
+        log.info("getType : " + requestDTO.getType());
+        log.info("getType : " + requestDTO.getKeyword());
+        Page<Object []> result = productRepository.getList(pageable, requestDTO.getType(), requestDTO.getKeyword());
 
         //Object 배열을 ProductDTO 타입으로 변경하기 위해서
         //함수를 생성

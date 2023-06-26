@@ -35,7 +35,6 @@ public class ProductController {
 
         try {
             PageResponseDTO pageResponseDTO = productService.getList(pageRequestDTO);
-
             return ApiResponse.success("상품 리스트 반환 성공", pageResponseDTO);
         }catch (Exception e){
             log.error("상품 리스트 반환 실패 : " + e.getMessage());

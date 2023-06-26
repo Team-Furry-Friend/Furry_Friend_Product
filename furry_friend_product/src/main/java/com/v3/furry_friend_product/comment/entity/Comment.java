@@ -32,5 +32,7 @@ public class Comment extends BaseEntity {
 
     private Long memberId;
 
+    private String nickname;
+
     private String rtext;
 }

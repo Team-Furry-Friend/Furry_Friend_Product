@@ -8,6 +8,7 @@ import com.v3.furry_friend_product.comment.dto.CommentDataRequestDTO;
 import com.v3.furry_friend_product.comment.entity.Comment;
 import com.v3.furry_friend_product.product.entity.Product;
 
+
 public interface CommentService {
     //상품 번호에 해당하는 리뷰를 전부 가져오기
     List<CommentDTO> getList(Long pid);
@@ -24,6 +25,7 @@ public interface CommentService {
                 .rtext(commentDTO.getText())
                 .product(Product.builder().pid(commentDTO.getPid()).build())
                 .memberId(commentDTO.getMid())
+                .nickname(commentDTO.getNickname())
                 .build();
         return comment;
 
@@ -34,6 +36,7 @@ public interface CommentService {
                 .rid(comment.getRid())
                 .pid(comment.getProduct().getPid())
                 .mid(comment.getMemberId())
+                .nickname(comment.getNickname())
                 .text(comment.getRtext())
                 .regDate(comment.getRegDate())
                 .modDate(comment.getModDate()).build();
