@@ -23,4 +23,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Object []> getProductWithAll(@Param("pid") Long pid);
 
     Product findByPid(Long pid);
+
+    // 인기 게시물 조회
+    @Query("select p, pi, count(b.product.pid) as cnt from Product p left outer join ProductImage pi on pi.product = p left outer join Basket b on b.product.pid = p.pid "
+        + "group by b.product.pid "
+        + "order by cnt desc")
+    List<Object[]> getpopularityList(Pageable pageable);
 }

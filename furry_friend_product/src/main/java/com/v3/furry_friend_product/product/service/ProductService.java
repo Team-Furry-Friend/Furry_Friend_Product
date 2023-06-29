@@ -31,6 +31,8 @@ public interface ProductService {
     // 상품 수정을 위한 메서드
     void updateProduct(ProductRequestDataDTO productRequestDataDTO);
 
+    List<ProductDTO> getpopularityList();
+
     //DTO를 Entity로 변환
     //하나의 Entity가 아니라 Movie와 MovieImage로 변환이 되어야 해서
     //Map으로 리턴

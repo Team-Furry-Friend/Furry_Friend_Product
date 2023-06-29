@@ -1,6 +1,7 @@
 package com.v3.furry_friend_product.product.controller;
 
 import java.nio.file.AccessDeniedException;
+import java.util.List;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -94,6 +95,19 @@ public class ProductController {
         }catch (Exception e){
             log.error("상품 수정 실패 : " + e.getMessage());
             return ApiResponse.fail(400, "상품 등록 실패 : " + e.getMessage());
+        }
+    }
+    
+    // 인기 게시물 조회
+    @GetMapping("/popularity")
+    public ApiResponse getpopularityList(){
+
+        try {
+            List<ProductDTO> productDTOList = productService.getpopularityList();
+            return ApiResponse.success("인기 게시물 조회 성공: ", productDTOList);
+        }catch (Exception e){
+            log.error("인기 게시물 조회 실패: " + e.getMessage());
+            return ApiResponse.fail(400, "인기 게시물 조회 실패: " + e.getMessage());
         }
     }
 }

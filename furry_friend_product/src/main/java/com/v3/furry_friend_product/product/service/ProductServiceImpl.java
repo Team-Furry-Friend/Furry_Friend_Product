@@ -2,13 +2,17 @@ package com.v3.furry_friend_product.product.service;
 
 import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpEntity;
@@ -28,6 +32,7 @@ import com.v3.furry_friend_product.common.dto.JwtRequest;
 import com.v3.furry_friend_product.product.dto.PageRequestDTO;
 import com.v3.furry_friend_product.product.dto.PageResponseDTO;
 import com.v3.furry_friend_product.product.dto.ProductDTO;
+import com.v3.furry_friend_product.product.dto.ProductImageDTO;
 import com.v3.furry_friend_product.product.dto.ProductRequestDataDTO;
 import com.v3.furry_friend_product.product.entity.Product;
 import com.v3.furry_friend_product.product.entity.ProductImage;
@@ -152,6 +157,33 @@ public class ProductServiceImpl implements ProductService {
             product.setRegDate(productDTO.getRegDate());
             productRepository.save(product);
         }
+    }
+
+    @Override
+    public List<ProductDTO> getpopularityList() {
+
+        Pageable pageable = PageRequest.of(0, 5); // pageNumber: 페이지 번호, pageSize: 한 페이지에 표시할 결과 수
+        List<Object[]> popularityList = productRepository.getpopularityList(pageable);
+        List<ProductDTO> productDTOList = new ArrayList<>();
+        popularityList.forEach(arr -> {
+
+            ProductDTO productDTO = null;
+            Product product = (Product) arr[0];
+            ProductImage productImage = (ProductImage) arr[1];
+
+            if (productImage == null) {
+                // ProductImage가 없는 경우에 대한 처리
+                productDTO = entitiesToDTO(product, Collections.emptyList());
+            } else {
+                // ProductImage가 있는 경우에 대한 처리
+                productDTO = entitiesToDTO(product, Collections.singletonList(productImage));
+            }
+
+            productDTOList.add(productDTO);
+        });
+
+
+        return productDTOList;
     }
 
     public String getMemberName(Long mid){
