@@ -34,7 +34,7 @@ public class CommentController {
             List<CommentDTO> result = commentService.getList(pid);
             return ApiResponse.success("댓글 조회 성공", result);
         }catch (Exception e){
-            log.error("상품 리스트 반환 실패" + e.getMessage());
+            log.error("상품 리스트 반환 실패" + e.getMessage(), e);
             return ApiResponse.fail(400, "댓글 조회 실패");
         }
 
@@ -48,7 +48,7 @@ public class CommentController {
             commentService.register(commentDataRequestDTO);
             return ApiResponse.success("댓글 등록 성공");
         }catch (Exception e){
-            log.error("댓글 등록 실패 : " + e.getMessage());
+            log.error("댓글 등록 실패 : " + e.getMessage(), e);
             return ApiResponse.fail(400, "댓글 등록 실패 : " + e.getMessage());
         }
     }
@@ -69,11 +69,11 @@ public class CommentController {
             commentService.remove(accessToken, rid);
             return ApiResponse.success("댓글 삭제 성공");
         }catch (AccessDeniedException accessDeniedException){
-            log.error(accessDeniedException.getMessage());
+            log.error("댓글 삭제 권한이 없습니다. : " + accessDeniedException.getMessage(), accessDeniedException);
             return ApiResponse.error(403, "댓글 삭제 권한이 없습니다. : " + accessDeniedException.getMessage());
         }
         catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("댓글 삭제 실패 : " + e.getMessage(), e);
             return ApiResponse.fail(400, "댓글 삭제 실패 : " + e.getMessage());
         }
     }

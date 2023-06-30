@@ -38,7 +38,7 @@ public class ProductController {
             PageResponseDTO pageResponseDTO = productService.getList(pageRequestDTO);
             return ApiResponse.success("상품 리스트 반환 성공", pageResponseDTO);
         }catch (Exception e){
-            log.error("상품 리스트 반환 실패 : " + e.getMessage());
+            log.error("상품 리스트 반환 실패 : " + e.getMessage(), e);
             return ApiResponse.fail(400, "상품 리스트 반환 실패 : " + e.getMessage());
         }
     }
@@ -51,7 +51,7 @@ public class ProductController {
             productService.register(productRequestDataDTO);
             return ApiResponse.success("상품 등록 성공");
         }catch (Exception e){
-            log.error("상품 등록 실패 : " + e.getMessage());
+            log.error("상품 등록 실패 : " + e.getMessage(), e);
             return ApiResponse.fail(400, "상품 등록 실패 : " + e.getMessage());
         }
     }
@@ -64,7 +64,7 @@ public class ProductController {
             ProductDTO productDTO = productService.getProduct(pid);
             return ApiResponse.success("상세 페이지 불러오기 성공", productDTO);
         }catch (Exception e){
-            log.error(e.getMessage());
+            log.error("상세 페이지 불러오기 실패 : " + e.getMessage(), e);
             return ApiResponse.fail(400, "상세 페이지 불러오기 실패 : " + e.getMessage());
         }
 
@@ -77,10 +77,10 @@ public class ProductController {
             productService.deleteProduct(pid, accessToken);
             return ApiResponse.success("상품 삭제 성공");
         }catch (AccessDeniedException accessDeniedException) {
-            log.error(accessDeniedException.getMessage());
+            log.error("상품 삭제 권한이 없습니다. : " + accessDeniedException.getMessage(), accessDeniedException);
             return ApiResponse.error(403, "상품 삭제 권한이 없습니다. : " + accessDeniedException.getMessage());
         }catch (Exception e){
-            log.error(e.getMessage());
+            log.error("상품 삭제 실패 : " + e.getMessage(), e);
             return ApiResponse.fail(400, "상품 삭제 실패 : " + e.getMessage());
         }
     }
@@ -93,7 +93,7 @@ public class ProductController {
             productService.updateProduct(productRequestDataDTO);
             return ApiResponse.success("상품 수정 성공");
         }catch (Exception e){
-            log.error("상품 수정 실패 : " + e.getMessage());
+            log.error("상품 수정 실패 : " + e.getMessage(), e);
             return ApiResponse.fail(400, "상품 등록 실패 : " + e.getMessage());
         }
     }
@@ -106,7 +106,7 @@ public class ProductController {
             List<ProductDTO> productDTOList = productService.getpopularityList();
             return ApiResponse.success("인기 게시물 조회 성공: ", productDTOList);
         }catch (Exception e){
-            log.error("인기 게시물 조회 실패: " + e.getMessage());
+            log.error("인기 게시물 조회 실패: " + e.getMessage(), e);
             return ApiResponse.fail(400, "인기 게시물 조회 실패: " + e.getMessage());
         }
     }
