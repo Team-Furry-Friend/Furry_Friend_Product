@@ -10,6 +10,7 @@ import com.v3.furry_friend_product.comment.dto.CommentDTO;
 import com.v3.furry_friend_product.comment.dto.CommentDataRequestDTO;
 import com.v3.furry_friend_product.comment.entity.Comment;
 import com.v3.furry_friend_product.comment.repository.CommentRepository;
+import com.v3.furry_friend_product.common.dto.JwtResponse;
 import com.v3.furry_friend_product.common.service.TokenService;
 import com.v3.furry_friend_product.product.entity.Product;
 import com.v3.furry_friend_product.product.service.ProductServiceImpl;
@@ -38,7 +39,9 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void register(CommentDataRequestDTO commentDataRequestDTO) {
 
-        Long mid = tokenService.getMemberId(commentDataRequestDTO.getJwtRequest().getAccess_token());
+        JwtResponse jwtResponse = tokenService.getMemberId(commentDataRequestDTO.getJwtRequest().getAccess_token());
+        Long mid = jwtResponse.getMemberId();
+
         String nickname = productServiceImpl.getMemberName(mid);
 
         CommentDTO commentDTO = commentDataRequestDTO.getCommentDTO();
@@ -59,9 +62,10 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void remove(String accessToken, Long rid) throws AccessDeniedException {
-        Long memberId = tokenService.getMemberId(accessToken);
+        JwtResponse jwtResponse = tokenService.getMemberId(accessToken);
+
         Comment comment = commentRepository.findByRid(rid);
-        if (comment.getMemberId().equals(memberId)){
+        if (comment.getMemberId().equals(jwtResponse.getMemberId())){
             commentRepository.deleteById(rid);
         }else{
             throw new AccessDeniedException("댓글 삭제 권한이 없습니다.");

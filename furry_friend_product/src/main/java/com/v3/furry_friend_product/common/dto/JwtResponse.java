@@ -5,10 +5,6 @@ import lombok.Getter;
 @Getter
 public class JwtResponse {
 
-    private MemberData data;
-
-    @Getter
-    public static class MemberData {
-        private Long memberId;
-    }
+    private Long memberId;
+    private String memberName;
 }

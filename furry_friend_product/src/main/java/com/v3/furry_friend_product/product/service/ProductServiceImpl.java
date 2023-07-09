@@ -27,6 +27,7 @@ import org.springframework.web.client.RestTemplate;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import com.v3.furry_friend_product.common.dto.JwtResponse;
 import com.v3.furry_friend_product.common.service.TokenService;
 import com.v3.furry_friend_product.common.dto.JwtRequest;
 import com.v3.furry_friend_product.product.dto.PageRequestDTO;
@@ -63,8 +64,8 @@ public class ProductServiceImpl implements ProductService {
         JwtRequest jwtRequest = productRequestDataDTO.getJwtRequest();
         
         // 등록자 삽입
-        Long memberId = tokenService.getMemberId(jwtRequest.getAccess_token());
-        productDTO.setMid(memberId);
+        JwtResponse jwtResponse = tokenService.getMemberId(jwtRequest.getAccess_token());
+        productDTO.setMid(jwtResponse.getMemberId());
 
         Map<String, Object> entityMap = dtoToEntity(productDTO);
         //상품과 상품 이미지 정보 찾아오기
@@ -128,11 +129,13 @@ public class ProductServiceImpl implements ProductService {
         return productDTO;
     }
 
+    // 상품 삭제 메서드
     @Override
     public void deleteProduct(Long pid, String accessToken) throws AccessDeniedException {
-        Long memberId = tokenService.getMemberId(accessToken);
+
+        JwtResponse jwtResponse = tokenService.getMemberId(accessToken);
         Product product = productRepository.findByPid(pid);
-        if (memberId.equals(product.getMemberId())){
+        if (jwtResponse.getMemberId().equals(product.getMemberId())){
             product.setDel(true);
             productRepository.save(product);
         }else{
@@ -149,8 +152,9 @@ public class ProductServiceImpl implements ProductService {
         JwtRequest jwtRequest = productRequestDataDTO.getJwtRequest();
 
         // 등록자 확인
-        Long memberId = tokenService.getMemberId(jwtRequest.getAccess_token());
-        if (productDTO.getMid().equals(memberId)){
+        JwtResponse jwtResponse = tokenService.getMemberId(jwtRequest.getAccess_token());
+
+        if (productDTO.getMid().equals(jwtResponse.getMemberId())){
             Map<String, Object> entityMap = dtoToEntity(productDTO);
             //상품과 상품 이미지 정보 찾아오기
             Product product = (Product) entityMap.get("product");

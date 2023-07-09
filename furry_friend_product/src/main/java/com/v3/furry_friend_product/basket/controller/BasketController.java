@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,10 +28,8 @@ public class BasketController {
 
     private final BasketService basketService;
 
-
-
-    @GetMapping("/{access_token}")
-    public ApiResponse<List<BasketResponseDTO>> basket(@PathVariable("access_token") String accessToken){
+    @GetMapping("")
+    public ApiResponse<List<BasketResponseDTO>> basket(@RequestHeader(value = "Authorization") String accessToken){
 
         try {
             List<BasketResponseDTO> basketResponseDTOList = basketService.findBasketList(accessToken);
@@ -41,7 +40,7 @@ public class BasketController {
         }
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public ApiResponse basketSave(@RequestBody BasketRequestDTO basketRequestDTO){
 
         try {
@@ -53,8 +52,8 @@ public class BasketController {
         }
     }
 
-    @DeleteMapping("/{bid}/{access_token}")
-    public ApiResponse basketDelete(@PathVariable("bid") Long bid, @PathVariable("access_token") String accessToken) {
+    @DeleteMapping("/{bid}")
+    public ApiResponse basketDelete(@PathVariable("bid") Long bid, @RequestHeader(value = "Authorization") String accessToken) {
 
         try {
             basketService.deleteBasketItem(bid, accessToken);
@@ -65,8 +64,8 @@ public class BasketController {
         }
     }
 
-    @GetMapping("/member/{access_token}")
-    public ApiResponse<List<MemberBasketResponseDTO>> getMemberbasket(@PathVariable("access_token") String accessToken){
+    @GetMapping("/member")
+    public ApiResponse<List<MemberBasketResponseDTO>> getMemberbasket(@RequestHeader(value = "Authorization") String accessToken){
 
         try {
             List<MemberBasketResponseDTO> memberBasketResponseDTOList = basketService.getMemberBasket(accessToken);

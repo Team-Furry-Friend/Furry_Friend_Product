@@ -21,7 +21,7 @@ public class TokenService {
     @Value("${token.isvalid}")
     private String url;
 
-    public Long getMemberId(String access_token){
+    public JwtResponse getMemberId(String access_token){
 
         // RestTemplate를 통한 API 호출
         HttpHeaders headers = new HttpHeaders();
@@ -48,8 +48,8 @@ public class TokenService {
         }
 
         // API 호출 결과에서 Long 값 추출
-        Long memberId = response.getBody().getData().getMemberId();
+        JwtResponse jwtResponse = response.getBody();
 
-        return memberId;
+        return jwtResponse;
     }
 }

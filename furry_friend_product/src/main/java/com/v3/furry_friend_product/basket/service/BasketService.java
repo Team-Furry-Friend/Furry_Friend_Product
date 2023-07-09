@@ -10,6 +10,7 @@ import com.v3.furry_friend_product.basket.dto.BasketResponseDTO;
 import com.v3.furry_friend_product.basket.dto.MemberBasketResponseDTO;
 import com.v3.furry_friend_product.basket.entity.Basket;
 import com.v3.furry_friend_product.basket.repository.BasketRepository;
+import com.v3.furry_friend_product.common.dto.JwtResponse;
 import com.v3.furry_friend_product.common.service.TokenService;
 import com.v3.furry_friend_product.product.dto.ProductImageDTO;
 import com.v3.furry_friend_product.product.entity.Product;
@@ -34,8 +35,8 @@ public class BasketService {
     public List<BasketResponseDTO> findBasketList(String accessToken) throws Exception{
 
         try {
-            Long memberId = tokenService.getMemberId(accessToken);
-            List<Object []> result = basketRepository.basketByMember(memberId);
+            JwtResponse jwtResponse = tokenService.getMemberId(accessToken);
+            List<Object []> result = basketRepository.basketByMember(jwtResponse.getMemberId());
 
             List<BasketResponseDTO> basketResponseDTOList = new ArrayList<>();
 
@@ -59,10 +60,10 @@ public class BasketService {
     // 찜 삭제하기
     public void deleteBasketItem(Long bid, String accessToken){
 
-        Long memberId = tokenService.getMemberId(accessToken);
+        JwtResponse jwtResponse = tokenService.getMemberId(accessToken);
         Basket basket = basketRepository.findByBid(bid);
 
-        if (memberId.equals(basket.getMemberid())){
+        if (jwtResponse.getMemberId().equals(basket.getMemberid())){
             basketRepository.deleteById(bid);
         }
     }
@@ -71,11 +72,11 @@ public class BasketService {
     public void saveBasket(BasketRequestDTO basketRequestDTO){
 
         Product product = productRepository.findByPid(basketRequestDTO.getPid());
-        Long memberId = tokenService.getMemberId(basketRequestDTO.getJwtRequest().getAccess_token());
+        JwtResponse jwtResponse = tokenService.getMemberId(basketRequestDTO.getJwtRequest().getAccess_token());
 
         Basket basket = Basket.builder()
             .product(product)
-            .memberid(memberId).build();
+            .memberid(jwtResponse.getMemberId()).build();
 
         basketRepository.save(basket);
     }
@@ -83,8 +84,8 @@ public class BasketService {
     // 사용자 찜 목록 조회
     public List<MemberBasketResponseDTO> getMemberBasket(String accessToken){
 
-        Long memberId = tokenService.getMemberId(accessToken);
-        List<Object []> result = basketRepository.findBasketByMember(memberId);
+        JwtResponse jwtResponse = tokenService.getMemberId(accessToken);
+        List<Object []> result = basketRepository.findBasketByMember(jwtResponse.getMemberId());
 
         List<MemberBasketResponseDTO> memberBasketResponseDTOList = new ArrayList<>();
 

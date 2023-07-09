@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -63,8 +64,8 @@ public class CommentController {
     // }
 
     //댓글 삭제
-    @DeleteMapping("/{rid}/{access_token}")
-    public ApiResponse deleteReview(@PathVariable("rid") Long rid, @PathVariable("access_token") String accessToken){
+    @DeleteMapping("/{rid}")
+    public ApiResponse deleteReview(@PathVariable("rid") Long rid, @RequestHeader(value = "Authorization") String accessToken){
         try {
             commentService.remove(accessToken, rid);
             return ApiResponse.success("댓글 삭제 성공");

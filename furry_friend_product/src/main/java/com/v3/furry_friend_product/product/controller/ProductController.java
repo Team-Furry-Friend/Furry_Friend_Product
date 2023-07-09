@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -71,8 +72,8 @@ public class ProductController {
     }
 
     // 상품 삭제
-    @DeleteMapping("/{pid}/{access_token}")
-    public ApiResponse deleteProduct(@PathVariable("pid") Long pid, @PathVariable("access_token") String accessToken){
+    @DeleteMapping("/{pid}")
+    public ApiResponse deleteProduct(@PathVariable("pid") Long pid, @RequestHeader(value = "Authorization") String accessToken){
         try{
             productService.deleteProduct(pid, accessToken);
             return ApiResponse.success("상품 삭제 성공");
