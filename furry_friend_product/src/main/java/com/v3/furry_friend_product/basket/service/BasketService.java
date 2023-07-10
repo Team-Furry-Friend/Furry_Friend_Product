@@ -40,21 +40,22 @@ public class BasketService {
 
             List<BasketResponseDTO> basketResponseDTOList = new ArrayList<>();
 
-
             result.forEach(arr -> {
-
                 // 0번째는 찜 고유 번호
                 // 1번째는 상품 정보
                 // 2번째는 상품 이미지 1장
-                basketResponseDTOList.add(entityToDTO((Long) arr[0], (Product) arr[1], (ProductImage) arr[2]));
-
+                if (arr[2] != null){
+                    basketResponseDTOList.add(entityToDTO((Long) arr[0], (Product) arr[1], (ProductImage) arr[2]));
+                }else{
+                    basketResponseDTOList.add(entityToDTO((Long) arr[0], (Product) arr[1], new ProductImage()));
+                }
             });
 
             return basketResponseDTOList;
         } catch (Exception e){
+
             throw new Exception("에러 발생 : " + e.getMessage());
         }
-
     }
 
     // 찜 삭제하기

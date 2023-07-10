@@ -84,10 +84,6 @@ public class ProductServiceImpl implements ProductService {
 
         Pageable pageable = requestDTO.getPageable(Sort.by("pid").descending());
 
-        log.info("getType : " + requestDTO.getPage());
-        log.info("getType : " + requestDTO.getSize());
-        log.info("getType : " + requestDTO.getType());
-        log.info("getType : " + requestDTO.getKeyword());
         Page<Object []> result = productRepository.getList(pageable, requestDTO.getType(), requestDTO.getKeyword());
 
         //Object 배열을 ProductDTO 타입으로 변경하기 위해서
