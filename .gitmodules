@@ -1,0 +1,3 @@
+[submodule "src/main/resources/Furry-Friend-Security"]
+	path = src/main/resources/Furry-Friend-Security
+	url = https://github.com/Team-Furry-Friend/Furry-Friend-Security.git
