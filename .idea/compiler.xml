@@ -10,8 +10,6 @@
         <module name="furry_friend_product.main" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="furry_friend_product" target="11" />
-    </bytecodeTargetLevel>
+    <bytecodeTargetLevel target="11" />
   </component>
 </project>

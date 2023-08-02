@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="VcsDirectoryMappings">
-    <mapping directory="" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/furry_friend_product/src/main/resources" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/furry_friend_product/src/main/resources/Furry-Friend-Security" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/.." vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/main/resources" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/main/resources/Furry-Friend-Security" vcs="Git" />
   </component>
 </project>
